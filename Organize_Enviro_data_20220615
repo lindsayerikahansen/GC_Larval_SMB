@@ -1,0 +1,75 @@
+#Reshaping Data
+
+
+#Libraries and working directory
+
+library(reshape)
+
+setwd("C:/Users/lhansen/Desktop/Larval")
+
+# Upload dataframes
+temp_larval <-read.csv("C:/Users/lhansen/Desktop/Larval/larval_temp.csv")
+temp<-temp_larval[2:5]
+turb_larval <-read.csv("C:/Users/lhansen/Desktop/Larval/larval_turb.csv")
+turb<-turb_larval[2:4]
+Discharge_larval <-read.csv("C:/Users/lhansen/Desktop/Larval/larval_discharge.csv")
+Discharge<-Discharge_larval[2:4]
+gpp_larval <-read.csv("C:/Users/lhansen/Desktop/Larval/larval_gpp.csv")
+gpp<-gpp_larval[2:4]
+
+
+
+
+#Organize Covariate Data - t1 = January 2014, tn = April 2022
+    # Example : approx (x=temp, y=rivermile, method="linear")
+y<- c(8.702533647,	8.852241263,	8.944986541,	9.005645161)  #Example vector of temperatures for Month 1
+
+x<- c(88.3,167.0,225.9,246.0) #Vector of locations. Represent BAC, National, Diamond and Spencer)
+z<- c(88.3,167.0,225.9) #Vector of locations. Represent BAC, National, and Diamond)
+try<-approx(y,x,method="linear", n=316)
+try
+
+#Temperature
+temp_interp<- data.frame(matrix(ncol=4, nrow=316))
+for (i in 1:nrow(temp)){
+  temp_interp[i]<-approx(temp[i,],x, method="linear",n=316)
+}
+temp_interp <- data.frame(col1 = try$y, temp_interp)
+names(temp_interp)[1] <- 'RiverMile'
+#Extrapolate future:
+  try <- predict(lm(temp~))
+
+
+#Turbidity
+turb_interp<- data.frame(matrix(ncol=4, nrow=316))
+for (i in 1:nrow(turb)){
+  turb_interp[i]<-approx(turb[i,],z, method="linear",n=316)
+}
+turb_interp <- data.frame(col1 = try$y, turb_interp)
+names(turb_interp)[1] <- 'RiverMile'
+
+
+#GPP
+gpp_interp<- data.frame(matrix(ncol=4, nrow=316))
+for (i in 1:nrow(gpp)){
+  gpp_interp[i]<-approx(gpp[i,],z, method="linear",n=316)
+}
+gpp_interp <- data.frame(col1 = try$y, gpp_interp)
+names(gpp_interp)[1] <- 'RiverMile'
+
+
+#Discharge
+discharge_interp<- data.frame(matrix(ncol=4, nrow=316))
+for (i in 1:nrow(Discharge)){
+  discharge_interp[i]<-approx(Discharge[i,],z, method="linear",n=316)
+}
+discharge_interp <- data.frame(col1 = try$y, discharge_interp)
+names(discharge_interp)[1] <- 'RiverMile'
+
+
+
+#Write as csvs
+write.csv(temp_interp, "larval_temp_interp.csv", row.names = FALSE)
+write.csv(turb_interp, "larval_turb_interp.csv", row.names = FALSE)
+write.csv(gpp_interp, "larval_gpp_interp.csv", row.names = FALSE)
+write.csv(discharge_interp, "larval_discharge_interp.csv", row.names = FALSE)
