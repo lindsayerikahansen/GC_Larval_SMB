@@ -1,0 +1,281 @@
+# Organize Larval and SMB Data
+
+
+#Libraries and working directory
+
+library(reshape)
+library(reshape2)
+library(dplyr)
+
+setwd("C:/Users/lhansen/Desktop/Larval")
+# Upload dataframes
+larval <-read.csv("C:/Users/lhansen/Desktop/Larval/all_larval.csv")
+# Round total and standard lengths
+larval$LengthSL_rounded <- round(larval$LengthSL)
+larval$LengthMinSL_rounded <- round(larval$LengthMinSL)
+larval$LengthMaxSL_rounded <- round(larval$LengthMaxSL)
+larval$LengthTL_rounded <- round(larval$LengthTL)
+
+LGC_b <-read.csv("C:/Users/lhansen/Desktop/Larval/LGC_larval_bottom.csv")
+LGC_t <-read.csv("C:/Users/lhansen/Desktop/Larval/LGC_larval_top.csv")
+
+LGC_merged <- merge(LGC_b, LGC_t, by=c("Station"))
+
+
+
+
+
+#Steps:
+#################################
+
+# Step 1: Create baseline dataset without binned length data
+
+################################
+
+
+# Find all combinations of year, month, rmi and haul
+larval$uni_id<-paste(larval$MonthSampled,larval$RMStart,larval$SampleNumber)
+larval$uni_id_spp<-paste(larval$MonthSampled,larval$RMStart,larval$SampleNumber,larval$SpeciesCode)
+
+#Bring out unique haul ID's
+larval_uni<-data.frame(uni_id=sort(unique(larval$uni_id)))
+
+#Pull our other information
+larval_uni$RMStart<-larval$RMStart[match(larval_uni[,1],larval$uni_id)] # River Mile
+larval_uni$MonthSampled<-larval$MonthSampled[match(larval_uni[,1],larval$uni_id)] # month and year
+larval_uni$Haul<-larval$SampleNumber[match(larval_uni[,1],larval$uni_id)] # haul
+larval_uni$AirTemp<-larval$AirTemperature[match(larval_uni[,1],larval$uni_id)] # Env Cov: Air Temp
+larval_uni$WaterTemp<-larval$WaterTemperature[match(larval_uni[,1],larval$uni_id)] # Env Cov: Water Temp
+larval_uni$DO<-larval$DO[match(larval_uni[,1],larval$uni_id)] # Env Cov: DO
+larval_uni$Salinity<-larval$Salinity[match(larval_uni[,1],larval$uni_id)] # Env Cov: Salinity
+larval_uni$pH<-larval$pH[match(larval_uni[,1],larval$uni_id)] # Env Cov: pH
+larval_uni$Conductivity<-larval$Conductivity[match(larval_uni[,1],larval$uni_id)] # Env Cov: Conductivity
+larval_uni$WaterVelocityMax<-larval$WaterVelocityMax[match(larval_uni[,1],larval$uni_id)] # Env Cov: Water Velocity Max
+larval_uni$WaterVelocityMin<-larval$WaterVelocityMin[match(larval_uni[,1],larval$uni_id)] # Env Cov: Water Velocity Min
+
+larval_uni$Habitat<-larval$Habitat[match(larval_uni[,1],larval$uni_id)] # Habitat
+larval_uni$Microhabitat<-larval$Microhabitat[match(larval_uni[,1],larval$uni_id)] # Microhabitat
+larval_uni$Substrate1<-larval$Substrate1[match(larval_uni[,1],larval$uni_id)] # Substrate1
+larval_uni$Substrate2<-larval$Substrate2[match(larval_uni[,1],larval$uni_id)] # Substrate2
+larval_uni$Cover1<-larval$Cover1[match(larval_uni[,1],larval$uni_id)] # Cover1
+larval_uni$Cover2<-larval$Cover2[match(larval_uni[,1],larval$uni_id)] # Cover2
+larval_uni$RiverLength<-larval$Length[match(larval_uni[,1],larval$uni_id)] # RiverLength
+larval_uni$WaterDepthHabitat<-larval$WaterDepthHabitat[match(larval_uni[,1],larval$uni_id)] # WaterDepthHabitat
+larval_uni$WaterTemp<-larval$WaterTemperatureHabitat[match(larval_uni[,1],larval$uni_id)] # WaterTemperatureHabitat
+larval_uni$GearType<-larval$GearDescription[match(larval_uni[,1],larval$uni_id)] # GearDescription
+
+
+
+############################################
+
+#Step 2: Reformat Standard Length Data to counts in wide format
+
+############################################
+SL_wide <- dcast(larval, uni_id_spp ~ LengthSL_rounded, value.var = "LengthSL_rounded", fun.aggregate = length)
+
+#Add in the other information 
+SL_wide$uni_id<-larval$uni_id[match(SL_wide[,1],larval$uni_id_spp)] # SpeciesCode
+SL_wide$SpeciesCode<-larval$SpeciesCode[match(SL_wide[,1],larval$uni_id_spp)] # SpeciesCode
+SL_wide$Genus<-larval$Genus[match(SL_wide[,1],larval$uni_id_spp)] # Genus
+SL_wide$Species<-larval$Species[match(SL_wide[,1],larval$uni_id_spp)] # species
+
+SL_wide$RMStart<-larval$RMStart[match(SL_wide[,1],larval$uni_id_spp_spp)] # River Mile
+SL_wide$MonthSampled<-larval$MonthSampled[match(SL_wide[,1],larval$uni_id_spp)] # month and year
+SL_wide$Haul<-larval$SampleNumber[match(SL_wide[,1],larval$uni_id_spp)] # haul
+SL_wide$AirTemp<-larval$AirTemperature[match(SL_wide[,1],larval$uni_id_spp)] # Env Cov: Air Temp
+SL_wide$WaterTemp<-larval$WaterTemperature[match(SL_wide[,1],larval$uni_id_spp)] # Env Cov: Water Temp
+SL_wide$DO<-larval$DO[match(SL_wide[,1],larval$uni_id_spp)] # Env Cov: DO
+SL_wide$Salinity<-larval$Salinity[match(SL_wide[,1],larval$uni_id_spp)] # Env Cov: Salinity
+SL_wide$pH<-larval$pH[match(SL_wide[,1],larval$uni_id_spp)] # Env Cov: pH
+SL_wide$Conductivity<-larval$Conductivity[match(SL_wide[,1],larval$uni_id_spp)] # Env Cov: Conductivity
+SL_wide$WaterVelocityMax<-larval$WaterVelocityMax[match(SL_wide[,1],larval$uni_id_spp)] # Env Cov: Water Velocity Max
+SL_wide$WaterVelocityMin<-larval$WaterVelocityMin[match(SL_wide[,1],larval$uni_id_spp)] # Env Cov: Water Velocity Min
+
+SL_wide$Habitat<-larval$Habitat[match(SL_wide[,1],larval$uni_id_spp)] # Habitat
+SL_wide$Microhabitat<-larval$Microhabitat[match(SL_wide[,1],larval$uni_id_spp)] # Microhabitat
+SL_wide$Substrate1<-larval$Substrate1[match(SL_wide[,1],larval$uni_id_spp)] # Substrate1
+SL_wide$Substrate2<-larval$Substrate2[match(SL_wide[,1],larval$uni_id_spp)] # Substrate2
+SL_wide$Cover1<-larval$Cover1[match(SL_wide[,1],larval$uni_id_spp)] # Cover1
+SL_wide$Cover2<-larval$Cover2[match(SL_wide[,1],larval$uni_id_spp)] # Cover2
+SL_wide$RiverLength<-larval$Length[match(SL_wide[,1],larval$uni_id_spp)] # RiverLength
+SL_wide$WaterDepthHabitat<-larval$WaterDepthHabitat[match(SL_wide[,1],larval$uni_id_spp)] # WaterDepthHabitat
+SL_wide$WaterTemp<-larval$WaterTemperatureHabitat[match(SL_wide[,1],larval$uni_id_spp)] # WaterTemperatureHabitat
+SL_wide$GearType<-larval$GearDescription[match(SL_wide[,1],larval$uni_id_spp)] # GearDescription
+
+########################################################
+
+# Step 3: Pull out subsets of SL data for each individual species
+
+########################################################
+
+#FMS
+larval_FMS<- SL_wide[SL_wide$SpeciesCode=="CATLAT",]
+
+
+
+
+#############################################################
+
+# Step 4: Add in Min and Max data for bulk captures
+
+##############################################################
+FMS_bulk<- larval[larval$SpeciesCode=="CATLAT",]
+
+larval_FMS$NumberCaptured<-FMS_bulk$NumberCaptured[match(larval_FMS[,1],FMS_bulk$uni_id_spp)] # number captured
+larval_FMS$LengthMinSL<-FMS_bulk$LengthMinSL[match(larval_FMS[,1],FMS_bulk$uni_id_spp)] # Min SL for bulk captures
+larval_FMS$LengthMaxSL<-FMS_bulk$LengthMaxSL[match(larval_FMS[,1],FMS_bulk$uni_id_spp)] # Max SL for bulk captures
+
+#Change name of number captured to unidentified lengths
+colnames(larval_FMS)[128] <- "Num_w_Unidentified_Length"
+
+#Remove ones and change to zeros 
+larval_FMS[,128][larval_FMS[,128] == 1] <- 0
+
+
+
+
+#############################################################
+
+# Step 5: Combine the Dataset for All Hauls with the Species Specific Datasets
+
+##############################################################
+
+flanny_join = merge(x=larval_FMS,y=larval_uni,by="uni_id",all=TRUE)
+
+#Fill in 0's for all NA's in flanny_join
+flanny_join[, 3:103][is.na(flanny_join[, 3:103])]  <- 0
+
+
+#############################################################
+
+# Step 6: Remove duplicated rows where there were we have caught individuals 
+
+##############################################################
+flanny_distinct<-  distinct(flanny_join, uni_id,  .keep_all= TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################################################################
+
+#Archive stuff
+
+###################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Create dataset with which to fill in empty columns
+#FMS
+larval_FMS<-subset(larval,larval$SpeciesCode=="CATLAT")
+#IF no catlat then zeros across the board
+
+
+
+
+
+
+
+#Take species data and fill it into the dataframe with unique ID's and size bins
+
+t_006<-which(names(larval_FMS)=="mm_006")
+
+for (i in 1:length(larval_FMS[,1])){   #for every row in the Flanny data...
+  tx<-match(larval_FMS$uni_id[i],larval_uni$uni)  #match the unique ID in the flanny data to the unique ID dataframe
+
+  ty<ifelse(larval_FMS$LengthTL_rounded[i]==6, larval_uni$mm_006, larval_FMS$NumberCaptured[i]+ larval_uni$mm_006)
+  )
+  tz<-larval_FMS$NumberCaptured[i]
+  larval_uni[tx,ty]<-larval_uni[tx,ty]+tz
+}
+
+#Steps to add:
+#If there is no total length, count the number of fish and put # in the 'unidentified length' column
+#If there is no total length, record the minimum length and put it in the Length min column
+#If there is no total length, record the maximum length and put it in the Length max column
+#If there is a total length, count the number of fish that correspond to each binned length and put the count in the proper column
+
+
+
+
+test.df$countHigh <- rowSums(test.df == "High")
+
+#Rerun for loop for the different species
+#HBC
+larval_uni_HBC<-subset(larval_uni,larval_uni$SpeciesCode=="GILCYP" )
+
+for (i in 1:length(larval_uni_HBC[,1])){
+  tx<-match(larval_uni_HBC$uni_id[i],larval_uni$uni)
+  ty<-ifelse()
+  tz<-larval_uni_HBC$NumberCaptured[i]
+  larval_uni[tx,ty]<-larval_uni[tx,ty]+tz
+}
+
+
+#FMS
+larval_uni_FMS<-subset(larval_uni,larval_uni$SpeciesCode=="CATLAT")
+
+
+larval_uni_FMS %>% count(SizeBin = round(StandardLength,-1))
+
+dd<- reshape2::melt(larval_uni_FMS,0)
+
+
+
+
+
+
+
+
+
+# Loop through original data and fill in information
+larval_uni_4loop <- larval_uni
+
+for (i in 1:length(larval_uni_4loop[,1])){
+  tx<-match(larval_uni_4loop$uni_id[i],larval_uni$uni)
+  ty<-ifelse(is.na(larval_uni_4loop$AgeClass[i])==TRUE,1+tstart+length(Vcodes),
+             ifelse(larval_uni_4loop$AgeClass[i]==0,tstart,larval_uni_4loop$VC[i]+tstart))
+  tz<-larval_uni_4loop$NumberCaptured[i]
+  larval_uni[tx,ty]<-larval_uni[tx,ty]+tz
+}
