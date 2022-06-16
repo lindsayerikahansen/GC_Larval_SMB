@@ -8,7 +8,17 @@ library(reshape2)
 library(dplyr)
 
 setwd("C:/Users/lhansen/Desktop/Larval")
-# Upload dataframes
+
+
+############ LARVAL #########################################################################
+
+#Steps:
+###################################
+
+# Step 0: Upload and Prep dataframes
+
+####################################
+# Upload larval dataframe
 larval <-read.csv("C:/Users/lhansen/Desktop/Larval/all_larval.csv")
 # Round total and standard lengths
 larval$LengthSL_rounded <- round(larval$LengthSL)
@@ -16,16 +26,6 @@ larval$LengthMinSL_rounded <- round(larval$LengthMinSL)
 larval$LengthMaxSL_rounded <- round(larval$LengthMaxSL)
 larval$LengthTL_rounded <- round(larval$LengthTL)
 
-LGC_b <-read.csv("C:/Users/lhansen/Desktop/Larval/LGC_larval_bottom.csv")
-LGC_t <-read.csv("C:/Users/lhansen/Desktop/Larval/LGC_larval_top.csv")
-
-LGC_merged <- merge(LGC_b, LGC_t, by=c("Station"))
-
-
-
-
-
-#Steps:
 #################################
 
 # Step 1: Create baseline dataset without binned length data
@@ -79,7 +79,7 @@ SL_wide$SpeciesCode<-larval$SpeciesCode[match(SL_wide[,1],larval$uni_id_spp)] # 
 SL_wide$Genus<-larval$Genus[match(SL_wide[,1],larval$uni_id_spp)] # Genus
 SL_wide$Species<-larval$Species[match(SL_wide[,1],larval$uni_id_spp)] # species
 
-SL_wide$RMStart<-larval$RMStart[match(SL_wide[,1],larval$uni_id_spp_spp)] # River Mile
+SL_wide$RMStart<-larval$RMStart[match(SL_wide[,1],larval$uni_id_spp)] # River Mile
 SL_wide$MonthSampled<-larval$MonthSampled[match(SL_wide[,1],larval$uni_id_spp)] # month and year
 SL_wide$Haul<-larval$SampleNumber[match(SL_wide[,1],larval$uni_id_spp)] # haul
 SL_wide$AirTemp<-larval$AirTemperature[match(SL_wide[,1],larval$uni_id_spp)] # Env Cov: Air Temp
@@ -110,27 +110,69 @@ SL_wide$GearType<-larval$GearDescription[match(SL_wide[,1],larval$uni_id_spp)] #
 
 #FMS
 larval_FMS<- SL_wide[SL_wide$SpeciesCode=="CATLAT",]
-
-
-
+larval_HBC<- SL_wide[SL_wide$SpeciesCode=="GILCYP",]
+larval_Bluey<- SL_wide[SL_wide$SpeciesCode=="CATDIS",]
+larval_Dace<- SL_wide[SL_wide$SpeciesCode=="RHIOSC",]
+larval_Fathead<- SL_wide[SL_wide$SpeciesCode=="PIMPRO",]
+larval_Razorback<- SL_wide[SL_wide$SpeciesCode=="XYRTEX",]
 
 #############################################################
 
 # Step 4: Add in Min and Max data for bulk captures
 
 ##############################################################
+#FMS
 FMS_bulk<- larval[larval$SpeciesCode=="CATLAT",]
-
 larval_FMS$NumberCaptured<-FMS_bulk$NumberCaptured[match(larval_FMS[,1],FMS_bulk$uni_id_spp)] # number captured
 larval_FMS$LengthMinSL<-FMS_bulk$LengthMinSL[match(larval_FMS[,1],FMS_bulk$uni_id_spp)] # Min SL for bulk captures
 larval_FMS$LengthMaxSL<-FMS_bulk$LengthMaxSL[match(larval_FMS[,1],FMS_bulk$uni_id_spp)] # Max SL for bulk captures
 
+#HBC
+HBC_bulk<- larval[larval$SpeciesCode=="GILCYP",]
+larval_HBC$NumberCaptured<-HBC_bulk$NumberCaptured[match(larval_HBC[,1],HBC_bulk$uni_id_spp)] # number captured
+larval_HBC$LengthMinSL<-HBC_bulk$LengthMinSL[match(larval_HBC[,1],HBC_bulk$uni_id_spp)] # Min SL for bulk captures
+larval_HBC$LengthMaxSL<-HBC_bulk$LengthMaxSL[match(larval_HBC[,1],HBC_bulk$uni_id_spp)] # Max SL for bulk captures
+
+#Bluey
+Bluey_bulk<- larval[larval$SpeciesCode=="CATDIS",]
+larval_Bluey$NumberCaptured<-Bluey_bulk$NumberCaptured[match(larval_Bluey[,1],Bluey_bulk$uni_id_spp)] # number captured
+larval_Bluey$LengthMinSL<-Bluey_bulk$LengthMinSL[match(larval_Bluey[,1],Bluey_bulk$uni_id_spp)] # Min SL for bulk captures
+larval_Bluey$LengthMaxSL<-Bluey_bulk$LengthMaxSL[match(larval_Bluey[,1],Bluey_bulk$uni_id_spp)] # Max SL for bulk captures
+
+#Dace
+Dace_bulk<- larval[larval$SpeciesCode=="RHIOSC",]
+larval_Dace$NumberCaptured<-Dace_bulk$NumberCaptured[match(larval_Dace[,1],Dace_bulk$uni_id_spp)] # number captured
+larval_Dace$LengthMinSL<-Dace_bulk$LengthMinSL[match(larval_Dace[,1],Dace_bulk$uni_id_spp)] # Min SL for bulk captures
+larval_Dace$LengthMaxSL<-Dace_bulk$LengthMaxSL[match(larval_Dace[,1],Dace_bulk$uni_id_spp)] # Max SL for bulk captures
+
+#Fathead
+Fathead_bulk<- larval[larval$SpeciesCode=="PIMPRO",]
+larval_Fathead$NumberCaptured<-Fathead_bulk$NumberCaptured[match(larval_Fathead[,1],Fathead_bulk$uni_id_spp)] # number captured
+larval_Fathead$LengthMinSL<-Fathead_bulk$LengthMinSL[match(larval_Fathead[,1],Fathead_bulk$uni_id_spp)] # Min SL for bulk captures
+larval_Fathead$LengthMaxSL<-Fathead_bulk$LengthMaxSL[match(larval_Fathead[,1],Fathead_bulk$uni_id_spp)] # Max SL for bulk captures
+
+#Razorback
+Razorback_bulk<- larval[larval$SpeciesCode=="XYRTEX",]
+larval_Razorback$NumberCaptured<-Razorback_bulk$NumberCaptured[match(larval_Razorback[,1],Razorback_bulk$uni_id_spp)] # number captured
+larval_Razorback$LengthMinSL<-Razorback_bulk$LengthMinSL[match(larval_Razorback[,1],Razorback_bulk$uni_id_spp)] # Min SL for bulk captures
+larval_Razorback$LengthMaxSL<-Razorback_bulk$LengthMaxSL[match(larval_Razorback[,1],Razorback_bulk$uni_id_spp)] # Max SL for bulk captures
+
+
 #Change name of number captured to unidentified lengths
 colnames(larval_FMS)[128] <- "Num_w_Unidentified_Length"
+colnames(larval_HBC)[128] <- "Num_w_Unidentified_Length"
+colnames(larval_Bluey)[128] <- "Num_w_Unidentified_Length"
+colnames(larval_Dace)[128] <- "Num_w_Unidentified_Length"
+colnames(larval_Fathead)[128] <- "Num_w_Unidentified_Length"
+colnames(larval_Razorback)[128] <- "Num_w_Unidentified_Length"
 
-#Remove ones and change to zeros 
+#Remove ones and change to zeros in bulk column
 larval_FMS[,128][larval_FMS[,128] == 1] <- 0
-
+larval_HBC[,128][larval_HBC[,128] == 1] <- 0
+larval_Bluey[,128][larval_Bluey[,128] == 1] <- 0
+larval_Dace[,128][larval_Dace[,128] == 1] <- 0
+larval_Fathead[,128][larval_Fathead[,128] == 1] <- 0
+larval_Razorback[,128][larval_Razorback[,128] == 1] <- 0
 
 
 
@@ -141,9 +183,20 @@ larval_FMS[,128][larval_FMS[,128] == 1] <- 0
 ##############################################################
 
 flanny_join = merge(x=larval_FMS,y=larval_uni,by="uni_id",all=TRUE)
+chub_join = merge(x=larval_HBC,y=larval_uni,by="uni_id",all=TRUE)
+bluey_join = merge(x=larval_Bluey,y=larval_uni,by="uni_id",all=TRUE)
+dace_join = merge(x=larval_Dace,y=larval_uni,by="uni_id",all=TRUE)
+fathead_join = merge(x=larval_Fathead,y=larval_uni,by="uni_id",all=TRUE)
+razorback_join = merge(x=larval_Razorback,y=larval_uni,by="uni_id",all=TRUE)
+
 
 #Fill in 0's for all NA's in flanny_join
 flanny_join[, 3:103][is.na(flanny_join[, 3:103])]  <- 0
+chub_join[, 3:103][is.na(chub_join[, 3:103])]  <- 0
+bluey_join[, 3:103][is.na(bluey_join[, 3:103])]  <- 0
+dace_join[, 3:103][is.na(dace_join[, 3:103])]  <- 0
+fathead_join[, 3:103][is.na(fathead_join[, 3:103])]  <- 0
+razorback_join[, 3:103][is.na(razorback_join[, 3:103])]  <- 0
 
 
 #############################################################
@@ -152,6 +205,621 @@ flanny_join[, 3:103][is.na(flanny_join[, 3:103])]  <- 0
 
 ##############################################################
 flanny_distinct<-  distinct(flanny_join, uni_id,  .keep_all= TRUE)
+chub_distinct<-  distinct(chub_join, uni_id,  .keep_all= TRUE)
+bluey_distinct<-  distinct(bluey_join, uni_id,  .keep_all= TRUE)
+dace_distinct<-  distinct(dace_join, uni_id,  .keep_all= TRUE)
+fathead_distinct<-  distinct(fathead_join, uni_id,  .keep_all= TRUE)
+razorback_distinct<-  distinct(razorback_join, uni_id,  .keep_all= TRUE)
+
+
+
+#############################################################
+
+# Step 7: Write to CSV's 
+
+##############################################################
+
+write.csv(flanny_distinct, "larvaldata_flanny_SL.csv", row.names = FALSE)
+write.csv(chub_distinct, "larvaldata_hbc_SL.csv", row.names = FALSE)
+write.csv(bluey_distinct, "larvaldata_bluey_SL.csv", row.names = FALSE)
+write.csv(dace_distinct, "larvaldata_dace_SL.csv", row.names = FALSE)
+write.csv(fathead_distinct, "larvaldata_fathead_SL.csv", row.names = FALSE)
+write.csv(razorback_distinct, "larvaldata_razorback_SL.csv", row.names = FALSE)
+
+
+
+
+
+######################   STEP 8: RE-DO FOR TOTAL LENGTH DATA ######################################
+
+
+
+
+############################################
+
+#Step 2B: Reformat Standard Length Data to counts in wide format
+
+############################################
+TL_wide <- dcast(larval, uni_id_spp ~ LengthTL_rounded, value.var = "LengthTL_rounded", fun.aggregate = length)
+
+#Add in the other information 
+TL_wide$uni_id<-larval$uni_id[match(TL_wide[,1],larval$uni_id_spp)] # SpeciesCode
+TL_wide$SpeciesCode<-larval$SpeciesCode[match(TL_wide[,1],larval$uni_id_spp)] # SpeciesCode
+TL_wide$Genus<-larval$Genus[match(TL_wide[,1],larval$uni_id_spp)] # Genus
+TL_wide$Species<-larval$Species[match(TL_wide[,1],larval$uni_id_spp)] # species
+
+TL_wide$RMStart<-larval$RMStart[match(TL_wide[,1],larval$uni_id_spp)] # River Mile
+TL_wide$MonthSampled<-larval$MonthSampled[match(TL_wide[,1],larval$uni_id_spp)] # month and year
+TL_wide$Haul<-larval$SampleNumber[match(TL_wide[,1],larval$uni_id_spp)] # haul
+TL_wide$AirTemp<-larval$AirTemperature[match(TL_wide[,1],larval$uni_id_spp)] # Env Cov: Air Temp
+TL_wide$WaterTemp<-larval$WaterTemperature[match(TL_wide[,1],larval$uni_id_spp)] # Env Cov: Water Temp
+TL_wide$DO<-larval$DO[match(TL_wide[,1],larval$uni_id_spp)] # Env Cov: DO
+TL_wide$Salinity<-larval$Salinity[match(TL_wide[,1],larval$uni_id_spp)] # Env Cov: Salinity
+TL_wide$pH<-larval$pH[match(TL_wide[,1],larval$uni_id_spp)] # Env Cov: pH
+TL_wide$Conductivity<-larval$Conductivity[match(TL_wide[,1],larval$uni_id_spp)] # Env Cov: Conductivity
+TL_wide$WaterVelocityMax<-larval$WaterVelocityMax[match(TL_wide[,1],larval$uni_id_spp)] # Env Cov: Water Velocity Max
+TL_wide$WaterVelocityMin<-larval$WaterVelocityMin[match(TL_wide[,1],larval$uni_id_spp)] # Env Cov: Water Velocity Min
+
+TL_wide$Habitat<-larval$Habitat[match(TL_wide[,1],larval$uni_id_spp)] # Habitat
+TL_wide$Microhabitat<-larval$Microhabitat[match(TL_wide[,1],larval$uni_id_spp)] # Microhabitat
+TL_wide$Substrate1<-larval$Substrate1[match(TL_wide[,1],larval$uni_id_spp)] # Substrate1
+TL_wide$Substrate2<-larval$Substrate2[match(TL_wide[,1],larval$uni_id_spp)] # Substrate2
+TL_wide$Cover1<-larval$Cover1[match(TL_wide[,1],larval$uni_id_spp)] # Cover1
+TL_wide$Cover2<-larval$Cover2[match(TL_wide[,1],larval$uni_id_spp)] # Cover2
+TL_wide$RiverLength<-larval$Length[match(TL_wide[,1],larval$uni_id_spp)] # RiverLength
+TL_wide$WaterDepthHabitat<-larval$WaterDepthHabitat[match(TL_wide[,1],larval$uni_id_spp)] # WaterDepthHabitat
+TL_wide$WaterTemp<-larval$WaterTemperatureHabitat[match(TL_wide[,1],larval$uni_id_spp)] # WaterTemperatureHabitat
+TL_wide$GearType<-larval$GearDescription[match(TL_wide[,1],larval$uni_id_spp)] # GearDescription
+
+########################################################
+
+# Step 3B: Pull out subsets of TL data for each individual species
+
+########################################################
+
+#FMS
+larval_FMS<- TL_wide[TL_wide$SpeciesCode=="CATLAT",]
+larval_HBC<- TL_wide[TL_wide$SpeciesCode=="GILCYP",]
+larval_Bluey<- TL_wide[TL_wide$SpeciesCode=="CATDIS",]
+larval_Dace<- TL_wide[TL_wide$SpeciesCode=="RHIOSC",]
+larval_Fathead<- TL_wide[TL_wide$SpeciesCode=="PIMPRO",]
+larval_Razorback<- TL_wide[TL_wide$SpeciesCode=="XYRTEX",]
+
+#############################################################
+
+# Step 4B: Add in Min and Max data for bulk captures
+
+##############################################################
+#FMS
+FMS_bulk<- larval[larval$SpeciesCode=="CATLAT",]
+larval_FMS$NumberCaptured<-FMS_bulk$NumberCaptured[match(larval_FMS[,1],FMS_bulk$uni_id_spp)] # number captured
+larval_FMS$LengthMinTL<-FMS_bulk$LengthMinTL[match(larval_FMS[,1],FMS_bulk$uni_id_spp)] # Min TL for bulk captures
+larval_FMS$LengthMaxTL<-FMS_bulk$LengthMaxTL[match(larval_FMS[,1],FMS_bulk$uni_id_spp)] # Max TL for bulk captures
+
+#HBC
+HBC_bulk<- larval[larval$SpeciesCode=="GILCYP",]
+larval_HBC$NumberCaptured<-HBC_bulk$NumberCaptured[match(larval_HBC[,1],HBC_bulk$uni_id_spp)] # number captured
+larval_HBC$LengthMinTL<-HBC_bulk$LengthMinTL[match(larval_HBC[,1],HBC_bulk$uni_id_spp)] # Min TL for bulk captures
+larval_HBC$LengthMaxTL<-HBC_bulk$LengthMaxTL[match(larval_HBC[,1],HBC_bulk$uni_id_spp)] # Max TL for bulk captures
+
+#Bluey
+Bluey_bulk<- larval[larval$SpeciesCode=="CATDIS",]
+larval_Bluey$NumberCaptured<-Bluey_bulk$NumberCaptured[match(larval_Bluey[,1],Bluey_bulk$uni_id_spp)] # number captured
+larval_Bluey$LengthMinTL<-Bluey_bulk$LengthMinTL[match(larval_Bluey[,1],Bluey_bulk$uni_id_spp)] # Min TL for bulk captures
+larval_Bluey$LengthMaxTL<-Bluey_bulk$LengthMaxTL[match(larval_Bluey[,1],Bluey_bulk$uni_id_spp)] # Max TL for bulk captures
+
+#Dace
+Dace_bulk<- larval[larval$SpeciesCode=="RHIOSC",]
+larval_Dace$NumberCaptured<-Dace_bulk$NumberCaptured[match(larval_Dace[,1],Dace_bulk$uni_id_spp)] # number captured
+larval_Dace$LengthMinTL<-Dace_bulk$LengthMinTL[match(larval_Dace[,1],Dace_bulk$uni_id_spp)] # Min TL for bulk captures
+larval_Dace$LengthMaxTL<-Dace_bulk$LengthMaxTL[match(larval_Dace[,1],Dace_bulk$uni_id_spp)] # Max TL for bulk captures
+
+#Fathead
+Fathead_bulk<- larval[larval$SpeciesCode=="PIMPRO",]
+larval_Fathead$NumberCaptured<-Fathead_bulk$NumberCaptured[match(larval_Fathead[,1],Fathead_bulk$uni_id_spp)] # number captured
+larval_Fathead$LengthMinTL<-Fathead_bulk$LengthMinTL[match(larval_Fathead[,1],Fathead_bulk$uni_id_spp)] # Min TL for bulk captures
+larval_Fathead$LengthMaxTL<-Fathead_bulk$LengthMaxTL[match(larval_Fathead[,1],Fathead_bulk$uni_id_spp)] # Max TL for bulk captures
+
+#Razorback
+Razorback_bulk<- larval[larval$SpeciesCode=="XYRTEX",]
+larval_Razorback$NumberCaptured<-Razorback_bulk$NumberCaptured[match(larval_Razorback[,1],Razorback_bulk$uni_id_spp)] # number captured
+larval_Razorback$LengthMinTL<-Razorback_bulk$LengthMinTL[match(larval_Razorback[,1],Razorback_bulk$uni_id_spp)] # Min TL for bulk captures
+larval_Razorback$LengthMaxTL<-Razorback_bulk$LengthMaxTL[match(larval_Razorback[,1],Razorback_bulk$uni_id_spp)] # Max TL for bulk captures
+
+
+#Change name of number captured to unidentified lengths
+colnames(larval_FMS)[166] <- "Num_w_Unidentified_Length"
+colnames(larval_HBC)[166] <- "Num_w_Unidentified_Length"
+colnames(larval_Bluey)[166] <- "Num_w_Unidentified_Length"
+colnames(larval_Dace)[166] <- "Num_w_Unidentified_Length"
+colnames(larval_Fathead)[166] <- "Num_w_Unidentified_Length"
+colnames(larval_Razorback)[166] <- "Num_w_Unidentified_Length"
+
+#Remove ones and change to zeros in bulk column
+larval_FMS[,166][larval_FMS[,166] == 1] <- 0
+larval_HBC[,166][larval_HBC[,166] == 1] <- 0
+larval_Bluey[,166][larval_Bluey[,166] == 1] <- 0
+larval_Dace[,166][larval_Dace[,166] == 1] <- 0
+larval_Fathead[,166][larval_Fathead[,166] == 1] <- 0
+larval_Razorback[,166][larval_Razorback[,166] == 1] <- 0
+
+
+
+#############################################################
+
+# Step 5B: Combine the Dataset for All Hauls with the Species Specific Datasets
+
+##############################################################
+
+flanny_join = merge(x=larval_FMS,y=larval_uni,by="uni_id",all=TRUE)
+chub_join = merge(x=larval_HBC,y=larval_uni,by="uni_id",all=TRUE)
+bluey_join = merge(x=larval_Bluey,y=larval_uni,by="uni_id",all=TRUE)
+dace_join = merge(x=larval_Dace,y=larval_uni,by="uni_id",all=TRUE)
+fathead_join = merge(x=larval_Fathead,y=larval_uni,by="uni_id",all=TRUE)
+razorback_join = merge(x=larval_Razorback,y=larval_uni,by="uni_id",all=TRUE)
+
+
+#Fill in 0's for all NA's in flanny_join
+flanny_join[, 3:103][is.na(flanny_join[, 3:103])]  <- 0
+chub_join[, 3:103][is.na(chub_join[, 3:103])]  <- 0
+bluey_join[, 3:103][is.na(bluey_join[, 3:103])]  <- 0
+dace_join[, 3:103][is.na(dace_join[, 3:103])]  <- 0
+fathead_join[, 3:103][is.na(fathead_join[, 3:103])]  <- 0
+razorback_join[, 3:103][is.na(razorback_join[, 3:103])]  <- 0
+
+
+#############################################################
+
+# Step 6B: Remove duplicated rows where there were we have caught individuals 
+
+##############################################################
+flanny_distinct<-  distinct(flanny_join, uni_id,  .keep_all= TRUE)
+chub_distinct<-  distinct(chub_join, uni_id,  .keep_all= TRUE)
+bluey_distinct<-  distinct(bluey_join, uni_id,  .keep_all= TRUE)
+dace_distinct<-  distinct(dace_join, uni_id,  .keep_all= TRUE)
+fathead_distinct<-  distinct(fathead_join, uni_id,  .keep_all= TRUE)
+razorback_distinct<-  distinct(razorback_join, uni_id,  .keep_all= TRUE)
+
+
+
+#############################################################
+
+# Step 7B: Write to CSV's 
+
+##############################################################
+
+write.csv(flanny_distinct, "larvaldata_flanny_TL.csv", row.names = FALSE)
+write.csv(chub_distinct, "larvaldata_hbc_TL.csv", row.names = FALSE)
+write.csv(bluey_distinct, "larvaldata_bluey_TL.csv", row.names = FALSE)
+write.csv(dace_distinct, "larvaldata_dace_TL.csv", row.names = FALSE)
+write.csv(fathead_distinct, "larvaldata_fathead_TL.csv", row.names = FALSE)
+write.csv(razorback_distinct, "larvaldata_razorback_TL.csv", row.names = FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###################################################################################################################
+###################################################################################################################
+###################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################### SMALL BODIED DATA ############################################################
+rm(list = ls())
+#Steps:
+###################################
+
+# Step 0: Upload and Prep dataframes
+
+####################################
+
+#Upload and combine the two small body dataframes (one has the fish data, the other has habitat data for each site)
+LGC_b <-read.csv("C:/Users/lhansen/Desktop/Larval/LGC_larval_bottom.csv")
+LGC_t <-read.csv("C:/Users/lhansen/Desktop/Larval/LGC_larval_top.csv")
+smbd <- merge(LGC_b, LGC_t, by=c("Station"))
+
+# Round total and standard lengths
+smbd$LengthSL_rounded <- round(smbd$LengthSL)
+smbd$LengthMinSL_rounded <- round(smbd$LengthMinSL)
+smbd$LengthMaxSL_rounded <- round(smbd$LengthMaxSL)
+smbd$LengthTL_rounded <- round(smbd$LengthTL)
+
+#################################
+
+# Step 1: Create baseline dataset without binned length data
+
+################################
+
+
+# Find all combinations of year, month, rmi and haul
+smbd$uni_id<-paste(smbd$Station, smbd$Sampling_Period,smbd$RMStart,smbd$SampleNumber)
+smbd$uni_id_spp<-paste(smbd$Station, smbd$Sampling_Period,smbd$RMStart,smbd$SampleNumber,smbd$SpeciesCode)
+
+#Bring out unique haul ID's
+smbd_uni<-data.frame(uni_id=sort(unique(smbd$uni_id)))
+
+#Pull out other information
+smbd_uni$RMStart<-smbd$RMStart[match(smbd_uni[,1],smbd$uni_id)] # River Mile
+smbd_uni$MonthSampled<-smbd$SamplingPeriod[match(smbd_uni[,1],smbd$uni_id)] # month and year
+smbd_uni$Haul<-smbd$SampleNumber[match(smbd_uni[,1],smbd$uni_id)] # haul
+smbd_uni$AirTemp<-smbd$Air_Temp_Min[match(smbd_uni[,1],smbd$uni_id)] # Env Cov: Air Temp
+smbd_uni$WaterTemp<-smbd$Temp_Min[match(smbd_uni[,1],smbd$uni_id)] # Env Cov: Water Temp
+smbd_uni$DO<-smbd$DO_Min[match(smbd_uni[,1],smbd$uni_id)] # Env Cov: DO
+smbd_uni$Salinity<-smbd$Salinity_Min[match(smbd_uni[,1],smbd$uni_id)] # Env Cov: Salinity
+smbd_uni$pH<-smbd$pH_Min[match(smbd_uni[,1],smbd$uni_id)] # Env Cov: pH
+smbd_uni$Conductivity<-smbd$Conductivity_True[match(smbd_uni[,1],smbd$uni_id)] # Env Cov: Conductivity
+
+smbd_uni$Substrate1<-smbd$Bottom_Substrate[match(smbd_uni[,1],smbd$uni_id)] # Substrate1
+smbd_uni$Cover1<-smbd$Vegetation[match(smbd_uni[,1],smbd$uni_id)] # Cover2
+smbd_uni$RiverLength<-smbd$Width_Min[match(smbd_uni[,1],smbd$uni_id)] # RiverLength
+smbd_uni$WaterDepthHabitat<-smbd$Water_Depth_Max[match(smbd_uni[,1],smbd$uni_id)] # WaterDepthHabitat
+smbd_uni$GearType<-smbd$Gear[match(smbd_uni[,1],smbd$uni_id)] # GearDescription
+
+
+
+############################################
+
+#Step 2: Reformat Standard Length Data to counts in wide format
+
+############################################
+SL_wide <- dcast(smbd, uni_id_spp ~ LengthSL_rounded, value.var = "LengthSL_rounded", fun.aggregate = length)
+
+#Add in the other information 
+SL_wide$uni_id<-smbd$uni_id[match(SL_wide[,1],smbd$uni_id_spp)] # SpeciesCode
+SL_wide$SpeciesCode<-smbd$SpeciesCode[match(SL_wide[,1],smbd$uni_id_spp)] # SpeciesCode
+SL_wide$Genus<-smbd$Genus[match(SL_wide[,1],smbd$uni_id_spp)] # Genus
+SL_wide$Species<-smbd$Species[match(SL_wide[,1],smbd$uni_id_spp)] # species
+
+SL_wide$RMStart<-smbd$RMStart[match(SL_wide[,1],smbd$uni_id_spp)] # River Mile
+SL_wide$MonthSampled<-smbd$SamplingPeriod[match(SL_wide[,1],smbd$uni_id_spp)] # month and year
+SL_wide$Haul<-smbd$SampleNumber[match(SL_wide[,1],smbd$uni_id_spp)] # haul
+SL_wide$AirTemp<-smbd$Air_Temp_Min[match(SL_wide[,1],smbd$uni_id_spp)] # Env Cov: Air Temp
+SL_wide$WaterTemp<-smbd$Temp_Min[match(SL_wide[,1],smbd$uni_id_spp)] # Env Cov: Water Temp
+SL_wide$DO<-smbd$DO_Min[match(SL_wide[,1],smbd$uni_id_spp)] # Env Cov: DO
+SL_wide$Salinity<-smbd$Salinity_Min[match(SL_wide[,1],smbd$uni_id_spp)] # Env Cov: Salinity
+SL_wide$pH<-smbd$pH_Min[match(SL_wide[,1],smbd$uni_id_spp)] # Env Cov: pH
+SL_wide$Conductivity<-smbd$Conductivity_True[match(SL_wide[,1],smbd$uni_id_spp)] # Env Cov: Conductivity
+
+SL_wide$Substrate1<-smbd$Bottom_Substrate[match(SL_wide[,1],smbd$uni_id_spp)] # Substrate1
+SL_wide$Cover1<-smbd$Vegetation[match(SL_wide[,1],smbd$uni_id_spp)] # Cover2
+SL_wide$RiverLength<-smbd$Width_Min[match(SL_wide[,1],smbd$uni_id_spp)] # RiverLength
+SL_wide$WaterDepthHabitat<-smbd$Water_Depth_Max[match(SL_wide[,1],smbd$uni_id_spp)] # WaterDepthHabitat
+SL_wide$GearType<-smbd$Gear[match(SL_wide[,1],smbd$uni_id_spp)] # GearDescription
+
+########################################################
+
+# Step 3: Pull out subsets of SL data for each individual species
+
+########################################################
+
+#FMS
+smbd_FMS<- SL_wide[SL_wide$SpeciesCode=="CATLAT",]
+smbd_HBC<- SL_wide[SL_wide$SpeciesCode=="GILCYP",]
+smbd_Bluey<- SL_wide[SL_wide$SpeciesCode=="CATDIS",]
+smbd_Dace<- SL_wide[SL_wide$SpeciesCode=="RHIOSC",]
+smbd_Fathead<- SL_wide[SL_wide$SpeciesCode=="PIMPRO",]
+smbd_Razorback<- SL_wide[SL_wide$SpeciesCode=="XYRTEX",]
+
+#############################################################
+
+# Step 4: Add in Min and Max data for bulk captures
+
+##############################################################
+#FMS
+FMS_bulk<- smbd[smbd$SpeciesCode=="CATLAT",]
+smbd_FMS$NumberCaptured<-FMS_bulk$NumberCaptured[match(smbd_FMS[,1],FMS_bulk$uni_id_spp)] # number captured
+smbd_FMS$LengthMinSL<-FMS_bulk$LengthMinSL[match(smbd_FMS[,1],FMS_bulk$uni_id_spp)] # Min SL for bulk captures
+smbd_FMS$LengthMaxSL<-FMS_bulk$LengthMaxSL[match(smbd_FMS[,1],FMS_bulk$uni_id_spp)] # Max SL for bulk captures
+
+#HBC
+HBC_bulk<- smbd[smbd$SpeciesCode=="GILCYP",]
+smbd_HBC$NumberCaptured<-HBC_bulk$NumberCaptured[match(smbd_HBC[,1],HBC_bulk$uni_id_spp)] # number captured
+smbd_HBC$LengthMinSL<-HBC_bulk$LengthMinSL[match(smbd_HBC[,1],HBC_bulk$uni_id_spp)] # Min SL for bulk captures
+smbd_HBC$LengthMaxSL<-HBC_bulk$LengthMaxSL[match(smbd_HBC[,1],HBC_bulk$uni_id_spp)] # Max SL for bulk captures
+
+#Bluey
+Bluey_bulk<- smbd[smbd$SpeciesCode=="CATDIS",]
+smbd_Bluey$NumberCaptured<-Bluey_bulk$NumberCaptured[match(smbd_Bluey[,1],Bluey_bulk$uni_id_spp)] # number captured
+smbd_Bluey$LengthMinSL<-Bluey_bulk$LengthMinSL[match(smbd_Bluey[,1],Bluey_bulk$uni_id_spp)] # Min SL for bulk captures
+smbd_Bluey$LengthMaxSL<-Bluey_bulk$LengthMaxSL[match(smbd_Bluey[,1],Bluey_bulk$uni_id_spp)] # Max SL for bulk captures
+
+#Dace
+Dace_bulk<- smbd[smbd$SpeciesCode=="RHIOSC",]
+smbd_Dace$NumberCaptured<-Dace_bulk$NumberCaptured[match(smbd_Dace[,1],Dace_bulk$uni_id_spp)] # number captured
+smbd_Dace$LengthMinSL<-Dace_bulk$LengthMinSL[match(smbd_Dace[,1],Dace_bulk$uni_id_spp)] # Min SL for bulk captures
+smbd_Dace$LengthMaxSL<-Dace_bulk$LengthMaxSL[match(smbd_Dace[,1],Dace_bulk$uni_id_spp)] # Max SL for bulk captures
+
+#Fathead
+Fathead_bulk<- smbd[smbd$SpeciesCode=="PIMPRO",]
+smbd_Fathead$NumberCaptured<-Fathead_bulk$NumberCaptured[match(smbd_Fathead[,1],Fathead_bulk$uni_id_spp)] # number captured
+smbd_Fathead$LengthMinSL<-Fathead_bulk$LengthMinSL[match(smbd_Fathead[,1],Fathead_bulk$uni_id_spp)] # Min SL for bulk captures
+smbd_Fathead$LengthMaxSL<-Fathead_bulk$LengthMaxSL[match(smbd_Fathead[,1],Fathead_bulk$uni_id_spp)] # Max SL for bulk captures
+
+#Razorback
+Razorback_bulk<- smbd[smbd$SpeciesCode=="XYRTEX",]
+smbd_Razorback$NumberCaptured<-Razorback_bulk$NumberCaptured[match(smbd_Razorback[,1],Razorback_bulk$uni_id_spp)] # number captured
+smbd_Razorback$LengthMinSL<-Razorback_bulk$LengthMinSL[match(smbd_Razorback[,1],Razorback_bulk$uni_id_spp)] # Min SL for bulk captures
+smbd_Razorback$LengthMaxSL<-Razorback_bulk$LengthMaxSL[match(smbd_Razorback[,1],Razorback_bulk$uni_id_spp)] # Max SL for bulk captures
+
+
+#Change name of number captured to unidentified lengths
+colnames(smbd_FMS)[111] <- "Num_w_Unidentified_Length"
+colnames(smbd_HBC)[111] <- "Num_w_Unidentified_Length"
+colnames(smbd_Bluey)[111] <- "Num_w_Unidentified_Length"
+colnames(smbd_Dace)[111] <- "Num_w_Unidentified_Length"
+colnames(smbd_Fathead)[111] <- "Num_w_Unidentified_Length"
+colnames(smbd_Razorback)[111] <- "Num_w_Unidentified_Length"
+
+#Remove ones and change to zeros in bulk column
+smbd_FMS[,111][smbd_FMS[,111] == 1] <- 0
+smbd_HBC[,111][smbd_HBC[,111] == 1] <- 0
+smbd_Bluey[,111][smbd_Bluey[,111] == 1] <- 0
+smbd_Dace[,111][smbd_Dace[,111] == 1] <- 0
+smbd_Fathead[,111][smbd_Fathead[,111] == 1] <- 0
+smbd_Razorback[,111][smbd_Razorback[,111] == 1] <- 0
+
+
+
+#############################################################
+
+# Step 5: Combine the Dataset for All Hauls with the Species Specific Datasets
+
+##############################################################
+
+flanny_join = merge(x=smbd_FMS,y=smbd_uni,by="uni_id",all=TRUE)
+chub_join = merge(x=smbd_HBC,y=smbd_uni,by="uni_id",all=TRUE)
+bluey_join = merge(x=smbd_Bluey,y=smbd_uni,by="uni_id",all=TRUE)
+dace_join = merge(x=smbd_Dace,y=smbd_uni,by="uni_id",all=TRUE)
+fathead_join = merge(x=smbd_Fathead,y=smbd_uni,by="uni_id",all=TRUE)
+razorback_join = merge(x=smbd_Razorback,y=smbd_uni,by="uni_id",all=TRUE)
+
+
+#Fill in 0's for all NA's in flanny_join
+flanny_join[, 3:94][is.na(flanny_join[, 3:94])]  <- 0
+chub_join[, 3:94][is.na(chub_join[, 3:94])]  <- 0
+bluey_join[, 3:94][is.na(bluey_join[, 3:94])]  <- 0
+dace_join[, 3:94][is.na(dace_join[, 3:94])]  <- 0
+fathead_join[, 3:94][is.na(fathead_join[, 3:94])]  <- 0
+razorback_join[, 3:94][is.na(razorback_join[, 3:94])]  <- 0
+
+
+#############################################################
+
+# Step 6: Remove duplicated rows where there were we have caught individuals 
+
+##############################################################
+flanny_distinct<-  distinct(flanny_join, uni_id,  .keep_all= TRUE)
+chub_distinct<-  distinct(chub_join, uni_id,  .keep_all= TRUE)
+bluey_distinct<-  distinct(bluey_join, uni_id,  .keep_all= TRUE)
+dace_distinct<-  distinct(dace_join, uni_id,  .keep_all= TRUE)
+fathead_distinct<-  distinct(fathead_join, uni_id,  .keep_all= TRUE)
+razorback_distinct<-  distinct(razorback_join, uni_id,  .keep_all= TRUE)
+
+
+
+#############################################################
+
+# Step 7: Write to CSV's 
+
+##############################################################
+
+write.csv(flanny_distinct, "smbddata_flanny_SL.csv", row.names = FALSE)
+write.csv(chub_distinct, "smbddata_hbc_SL.csv", row.names = FALSE)
+write.csv(bluey_distinct, "smbddata_bluey_SL.csv", row.names = FALSE)
+write.csv(dace_distinct, "smbddata_dace_SL.csv", row.names = FALSE)
+write.csv(fathead_distinct, "smbddata_fathead_SL.csv", row.names = FALSE)
+write.csv(razorback_distinct, "smbddata_razorback_SL.csv", row.names = FALSE)
+
+
+
+
+
+######################   STEP 8: RE-DO FOR TOTAL LENGTH DATA ######################################
+
+
+
+
+############################################
+
+#Step 2B: Reformat Standard Length Data to counts in wide format
+
+############################################
+TL_wide <- dcast(smbd, uni_id_spp ~ LengthTL_rounded, value.var = "LengthTL_rounded", fun.aggregate = length)
+
+#Add in the other information 
+TL_wide$uni_id<-smbd$uni_id[match(TL_wide[,1],smbd$uni_id_spp)] # SpeciesCode
+TL_wide$SpeciesCode<-smbd$SpeciesCode[match(TL_wide[,1],smbd$uni_id_spp)] # SpeciesCode
+TL_wide$Genus<-smbd$Genus[match(TL_wide[,1],smbd$uni_id_spp)] # Genus
+TL_wide$Species<-smbd$Species[match(TL_wide[,1],smbd$uni_id_spp)] # species
+
+TL_wide$RMStart<-smbd$RMStart[match(TL_wide[,1],smbd$uni_id_spp)] # River Mile
+TL_wide$MonthSampled<-smbd$SamplingPeriod[match(TL_wide[,1],smbd$uni_id_spp)] # month and year
+TL_wide$Haul<-smbd$SampleNumber[match(TL_wide[,1],smbd$uni_id_spp)] # haul
+TL_wide$AirTemp<-smbd$Air_Temp_Min[match(TL_wide[,1],smbd$uni_id_spp)] # Env Cov: Air Temp
+TL_wide$WaterTemp<-smbd$Temp_Min[match(TL_wide[,1],smbd$uni_id_spp)] # Env Cov: Water Temp
+TL_wide$DO<-smbd$DO_Min[match(TL_wide[,1],smbd$uni_id_spp)] # Env Cov: DO
+TL_wide$Salinity<-smbd$Salinity_Min[match(TL_wide[,1],smbd$uni_id_spp)] # Env Cov: Salinity
+TL_wide$pH<-smbd$pH_Min[match(TL_wide[,1],smbd$uni_id_spp)] # Env Cov: pH
+TL_wide$Conductivity<-smbd$Conductivity_True[match(TL_wide[,1],smbd$uni_id_spp)] # Env Cov: Conductivity
+
+TL_wide$Substrate1<-smbd$Bottom_Substrate[match(TL_wide[,1],smbd$uni_id_spp)] # Substrate1
+TL_wide$Cover1<-smbd$Vegetation[match(TL_wide[,1],smbd$uni_id_spp)] # Cover2
+TL_wide$RiverLength<-smbd$Width_Min[match(TL_wide[,1],smbd$uni_id_spp)] # RiverLength
+TL_wide$WaterDepthHabitat<-smbd$Water_Depth_Max[match(TL_wide[,1],smbd$uni_id_spp)] # WaterDepthHabitat
+TL_wide$GearType<-smbd$Gear[match(TL_wide[,1],smbd$uni_id_spp)] # GearDescription
+
+########################################################
+
+########################################################
+
+# Step 3B: Pull out subsets of TL data for each individual species
+
+########################################################
+
+#FMS
+smbd_FMS<- TL_wide[TL_wide$SpeciesCode=="CATLAT",]
+smbd_HBC<- TL_wide[TL_wide$SpeciesCode=="GILCYP",]
+smbd_Bluey<- TL_wide[TL_wide$SpeciesCode=="CATDIS",]
+smbd_Dace<- TL_wide[TL_wide$SpeciesCode=="RHIOSC",]
+smbd_Fathead<- TL_wide[TL_wide$SpeciesCode=="PIMPRO",]
+smbd_Razorback<- TL_wide[TL_wide$SpeciesCode=="XYRTEX",]
+
+#############################################################
+
+# Step 4B: Add in Min and Max data for bulk captures
+
+##############################################################
+#FMS
+FMS_bulk<- smbd[smbd$SpeciesCode=="CATLAT",]
+smbd_FMS$NumberCaptured<-FMS_bulk$NumberCaptured[match(smbd_FMS[,1],FMS_bulk$uni_id_spp)] # number captured
+smbd_FMS$LengthMinTL<-FMS_bulk$LengthMinTL[match(smbd_FMS[,1],FMS_bulk$uni_id_spp)] # Min TL for bulk captures
+smbd_FMS$LengthMaxTL<-FMS_bulk$LengthMaxTL[match(smbd_FMS[,1],FMS_bulk$uni_id_spp)] # Max TL for bulk captures
+
+#HBC
+HBC_bulk<- smbd[smbd$SpeciesCode=="GILCYP",]
+smbd_HBC$NumberCaptured<-HBC_bulk$NumberCaptured[match(smbd_HBC[,1],HBC_bulk$uni_id_spp)] # number captured
+smbd_HBC$LengthMinTL<-HBC_bulk$LengthMinTL[match(smbd_HBC[,1],HBC_bulk$uni_id_spp)] # Min TL for bulk captures
+smbd_HBC$LengthMaxTL<-HBC_bulk$LengthMaxTL[match(smbd_HBC[,1],HBC_bulk$uni_id_spp)] # Max TL for bulk captures
+
+#Bluey
+Bluey_bulk<- smbd[smbd$SpeciesCode=="CATDIS",]
+smbd_Bluey$NumberCaptured<-Bluey_bulk$NumberCaptured[match(smbd_Bluey[,1],Bluey_bulk$uni_id_spp)] # number captured
+smbd_Bluey$LengthMinTL<-Bluey_bulk$LengthMinTL[match(smbd_Bluey[,1],Bluey_bulk$uni_id_spp)] # Min TL for bulk captures
+smbd_Bluey$LengthMaxTL<-Bluey_bulk$LengthMaxTL[match(smbd_Bluey[,1],Bluey_bulk$uni_id_spp)] # Max TL for bulk captures
+
+#Dace
+Dace_bulk<- smbd[smbd$SpeciesCode=="RHIOSC",]
+smbd_Dace$NumberCaptured<-Dace_bulk$NumberCaptured[match(smbd_Dace[,1],Dace_bulk$uni_id_spp)] # number captured
+smbd_Dace$LengthMinTL<-Dace_bulk$LengthMinTL[match(smbd_Dace[,1],Dace_bulk$uni_id_spp)] # Min TL for bulk captures
+smbd_Dace$LengthMaxTL<-Dace_bulk$LengthMaxTL[match(smbd_Dace[,1],Dace_bulk$uni_id_spp)] # Max TL for bulk captures
+
+#Fathead
+Fathead_bulk<- smbd[smbd$SpeciesCode=="PIMPRO",]
+smbd_Fathead$NumberCaptured<-Fathead_bulk$NumberCaptured[match(smbd_Fathead[,1],Fathead_bulk$uni_id_spp)] # number captured
+smbd_Fathead$LengthMinTL<-Fathead_bulk$LengthMinTL[match(smbd_Fathead[,1],Fathead_bulk$uni_id_spp)] # Min TL for bulk captures
+smbd_Fathead$LengthMaxTL<-Fathead_bulk$LengthMaxTL[match(smbd_Fathead[,1],Fathead_bulk$uni_id_spp)] # Max TL for bulk captures
+
+#Razorback
+Razorback_bulk<- smbd[smbd$SpeciesCode=="XYRTEX",]
+smbd_Razorback$NumberCaptured<-Razorback_bulk$NumberCaptured[match(smbd_Razorback[,1],Razorback_bulk$uni_id_spp)] # number captured
+smbd_Razorback$LengthMinTL<-Razorback_bulk$LengthMinTL[match(smbd_Razorback[,1],Razorback_bulk$uni_id_spp)] # Min TL for bulk captures
+smbd_Razorback$LengthMaxTL<-Razorback_bulk$LengthMaxTL[match(smbd_Razorback[,1],Razorback_bulk$uni_id_spp)] # Max TL for bulk captures
+
+
+#Change name of number captured to unidentified lengths
+colnames(smbd_FMS)[121] <- "Num_w_Unidentified_Length"
+colnames(smbd_HBC)[121] <- "Num_w_Unidentified_Length"
+colnames(smbd_Bluey)[121] <- "Num_w_Unidentified_Length"
+colnames(smbd_Dace)[121] <- "Num_w_Unidentified_Length"
+colnames(smbd_Fathead)[121] <- "Num_w_Unidentified_Length"
+colnames(smbd_Razorback)[121] <- "Num_w_Unidentified_Length"
+
+#Remove ones and change to zeros in bulk column
+smbd_FMS[,121][smbd_FMS[,121] == 1] <- 0
+smbd_HBC[,121][smbd_HBC[,121] == 1] <- 0
+smbd_Bluey[,121][smbd_Bluey[,121] == 1] <- 0
+smbd_Dace[,121][smbd_Dace[,121] == 1] <- 0
+smbd_Fathead[,121][smbd_Fathead[,121] == 1] <- 0
+smbd_Razorback[,121][smbd_Razorback[,121] == 1] <- 0
+
+
+
+#############################################################
+
+# Step 5B: Combine the Dataset for All Hauls with the Species Specific Datasets
+
+##############################################################
+
+flanny_join = merge(x=smbd_FMS,y=smbd_uni,by="uni_id",all=TRUE)
+chub_join = merge(x=smbd_HBC,y=smbd_uni,by="uni_id",all=TRUE)
+bluey_join = merge(x=smbd_Bluey,y=smbd_uni,by="uni_id",all=TRUE)
+dace_join = merge(x=smbd_Dace,y=smbd_uni,by="uni_id",all=TRUE)
+fathead_join = merge(x=smbd_Fathead,y=smbd_uni,by="uni_id",all=TRUE)
+razorback_join = merge(x=smbd_Razorback,y=smbd_uni,by="uni_id",all=TRUE)
+
+
+#Fill in 0's for all NA's in flanny_join
+flanny_join[, 3:104][is.na(flanny_join[, 3:104])]  <- 0
+chub_join[, 3:104][is.na(chub_join[, 3:104])]  <- 0
+bluey_join[, 3:104][is.na(bluey_join[, 3:104])]  <- 0
+dace_join[, 3:104][is.na(dace_join[, 3:104])]  <- 0
+fathead_join[, 3:104][is.na(fathead_join[, 3:104])]  <- 0
+razorback_join[, 3:104][is.na(razorback_join[, 3:104])]  <- 0
+
+
+#############################################################
+
+# Step 6B: Remove duplicated rows where there were we have caught individuals 
+
+##############################################################
+flanny_distinct<-  distinct(flanny_join, uni_id,  .keep_all= TRUE)
+chub_distinct<-  distinct(chub_join, uni_id,  .keep_all= TRUE)
+bluey_distinct<-  distinct(bluey_join, uni_id,  .keep_all= TRUE)
+dace_distinct<-  distinct(dace_join, uni_id,  .keep_all= TRUE)
+fathead_distinct<-  distinct(fathead_join, uni_id,  .keep_all= TRUE)
+razorback_distinct<-  distinct(razorback_join, uni_id,  .keep_all= TRUE)
+
+
+
+#############################################################
+
+# Step 7B: Write to CSV's 
+
+##############################################################
+
+write.csv(flanny_distinct, "smbddata_flanny_TL.csv", row.names = FALSE)
+write.csv(chub_distinct, "smbddata_hbc_TL.csv", row.names = FALSE)
+write.csv(bluey_distinct, "smbddata_bluey_TL.csv", row.names = FALSE)
+write.csv(dace_distinct, "smbddata_dace_TL.csv", row.names = FALSE)
+write.csv(fathead_distinct, "smbddata_fathead_TL.csv", row.names = FALSE)
+write.csv(razorback_distinct, "smbddata_razorback_TL.csv", row.names = FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
