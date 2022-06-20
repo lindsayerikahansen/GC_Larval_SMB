@@ -15,6 +15,6 @@ B. Original data files that include the raw larval and small bodied fish data, a
     - larval_temp.csv (daily temperature data from Bright Angel, National, Diamond, Pearce gages)
     - larval_turb.csv (daily turbidity data from Bright Angel, National, Diamond, Pearce gages)
     - larval_discharge.csv (daily discharge data from Bright Angel, National, Diamond, Pearce gages)
-    - larval_gpp.csv (daily GPP data from YSI's)
+    - larval_gpp.csv (daily GPP data from YSI's. Note that these data only go through 2019)
 
 C. The formatted files for BHS, SPD, FHM, FMS, HBC and RBS, in excel format, that are ready to be used in growth models are available on TEAMS.
