@@ -73,6 +73,7 @@ larval_uni$GearType<-larval$GearDescription[match(larval_uni[,1],larval$uni_id)]
 ############################################
 SL_wide <- dcast(larval, uni_id_spp ~ LengthSL_rounded, value.var = "LengthSL_rounded", fun.aggregate = length)
 
+
 #Add in the other information 
 SL_wide$uni_id<-larval$uni_id[match(SL_wide[,1],larval$uni_id_spp)] # SpeciesCode
 SL_wide$SpeciesCode<-larval$SpeciesCode[match(SL_wide[,1],larval$uni_id_spp)] # SpeciesCode
@@ -101,6 +102,11 @@ SL_wide$RiverLength<-larval$Length[match(SL_wide[,1],larval$uni_id_spp)] # River
 SL_wide$WaterDepthHabitat<-larval$WaterDepthHabitat[match(SL_wide[,1],larval$uni_id_spp)] # WaterDepthHabitat
 SL_wide$WaterTemp<-larval$WaterTemperatureHabitat[match(SL_wide[,1],larval$uni_id_spp)] # WaterTemperatureHabitat
 SL_wide$GearType<-larval$GearDescription[match(SL_wide[,1],larval$uni_id_spp)] # GearDescription
+
+
+
+
+
 
 ########################################################
 
@@ -197,6 +203,8 @@ bluey_join[, 3:103][is.na(bluey_join[, 3:103])]  <- 0
 dace_join[, 3:103][is.na(dace_join[, 3:103])]  <- 0
 fathead_join[, 3:103][is.na(fathead_join[, 3:103])]  <- 0
 razorback_join[, 3:103][is.na(razorback_join[, 3:103])]  <- 0
+
+
 
 
 #############################################################
@@ -360,12 +368,12 @@ razorback_join = merge(x=larval_Razorback,y=larval_uni,by="uni_id",all=TRUE)
 
 
 #Fill in 0's for all NA's in flanny_join
-flanny_join[, 3:103][is.na(flanny_join[, 3:103])]  <- 0
-chub_join[, 3:103][is.na(chub_join[, 3:103])]  <- 0
-bluey_join[, 3:103][is.na(bluey_join[, 3:103])]  <- 0
-dace_join[, 3:103][is.na(dace_join[, 3:103])]  <- 0
-fathead_join[, 3:103][is.na(fathead_join[, 3:103])]  <- 0
-razorback_join[, 3:103][is.na(razorback_join[, 3:103])]  <- 0
+flanny_join[, 3:140][is.na(flanny_join[, 3:140])]  <- 0
+chub_join[, 3:140][is.na(chub_join[, 3:140])]  <- 0
+bluey_join[, 3:140][is.na(bluey_join[, 3:140])]  <- 0
+dace_join[, 3:140][is.na(dace_join[, 3:140])]  <- 0
+fathead_join[, 3:140][is.na(fathead_join[, 3:140])]  <- 0
+razorback_join[, 3:140][is.na(razorback_join[, 3:140])]  <- 0
 
 
 #############################################################
